@@ -20,17 +20,19 @@ const SPECIAL_PRODUCTS = [
   { id: 8, name: 'Snapback Cap', price: '₱149', old: '₱249', img: 'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80', tag: 'Sale' },
 ]
 
-function ProductCard({ product }) {
+function ProductCard({ product, navigate }) {
   return (
-    <div style={{
-      background: '#fff', borderRadius: '12px', overflow: 'hidden',
-      border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer',
-    }}
+    <div
+      style={{
+        background: '#fff', borderRadius: '12px', overflow: 'hidden',
+        border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer',
+      }}
       onMouseOver={e => e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'}
       onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}
     >
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <img src={product.img} alt={product.name}
+        <img
+          src={product.img} alt={product.name}
           style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' }}
           onMouseOver={e => e.target.style.transform = 'scale(1.05)'}
           onMouseOut={e => e.target.style.transform = 'scale(1)'}
@@ -50,13 +52,15 @@ function ProductCard({ product }) {
           <span style={{ fontWeight: '800', color: '#111827', fontSize: '1rem' }}>{product.price}</span>
           <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old}</span>
         </div>
-        <button style={{
-          width: '100%', background: '#111827', color: '#fff', border: 'none',
-          borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-        }}
+        <button
+          onClick={() => navigate('/checkout', { state: { product } })}
+          style={{
+            width: '100%', background: '#111827', color: '#fff', border: 'none',
+            borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
+          }}
           onMouseOver={e => e.target.style.background = '#374151'}
           onMouseOut={e => e.target.style.background = '#111827'}
-        onClick={() => navigate('/checkout')}>+ Add to cart</button>
+        >+ Add to cart</button>
       </div>
     </div>
   )
@@ -83,10 +87,12 @@ export default function StreetwearPage() {
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <span style={{ fontSize: '0.9rem', color: '#9ca3af' }}>Streetwear</span>
-          <button style={{
-            background: '#fff', color: '#111827', border: 'none', borderRadius: '8px',
-            padding: '0.5rem 1rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer',
-          }}>🛒 Cart (0)</button>
+          <button
+            onClick={() => navigate('/checkout')}
+            style={{
+              background: '#fff', color: '#111827', border: 'none', borderRadius: '8px',
+              padding: '0.5rem 1rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer',
+            }}>🛒 Cart (0)</button>
         </div>
       </div>
 
@@ -108,7 +114,7 @@ export default function StreetwearPage() {
             New products
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
-            {NEW_PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            {NEW_PRODUCTS.map(p => <ProductCard key={p.id} product={p} navigate={navigate} />)}
           </div>
         </div>
 
@@ -118,7 +124,7 @@ export default function StreetwearPage() {
             Special products
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
-            {SPECIAL_PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            {SPECIAL_PRODUCTS.map(p => <ProductCard key={p.id} product={p} navigate={navigate} />)}
           </div>
         </div>
 

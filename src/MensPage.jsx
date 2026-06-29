@@ -21,18 +21,19 @@ const SPECIAL_PRODUCTS = [
   { id: 8, name: 'Sport Jacket', price: '₱749', old: '₱999', img: 'https://images.unsplash.com/photo-1550246140-29f40b909e5a?w=400&q=80', tag: 'Sale' },
 ]
 
-function ProductCard({ product }) {
+function ProductCard({ product, navigate }) {
   return (
-    <div style={{
-      background: '#fff', borderRadius: '12px', overflow: 'hidden',
-      border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer',
-    }}
+    <div
+      style={{
+        background: '#fff', borderRadius: '12px', overflow: 'hidden',
+        border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer',
+      }}
       onMouseOver={e => e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'}
       onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}
     >
-      {/* Image */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <img src={product.img} alt={product.name}
+        <img
+          src={product.img} alt={product.name}
           style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' }}
           onMouseOver={e => e.target.style.transform = 'scale(1.05)'}
           onMouseOut={e => e.target.style.transform = 'scale(1)'}
@@ -46,23 +47,21 @@ function ProductCard({ product }) {
           }}>{product.tag}</span>
         )}
       </div>
-
-      {/* Info */}
       <div style={{ padding: '1rem' }}>
         <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0 0 0.25rem', lineHeight: '1.4' }}>{product.name}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <span style={{ fontWeight: '800', color: '#be185d', fontSize: '1rem' }}>{product.price}</span>
           <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old}</span>
         </div>
-        <button style={{
-          width: '100%', background: '#1a1a2e', color: '#fff', border: 'none',
-          borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-          transition: 'background 0.2s',
-        }}
+        <button
+          onClick={() => navigate('/checkout', { state: { product } })}
+          style={{
+            width: '100%', background: '#1a1a2e', color: '#fff', border: 'none',
+            borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
+          }}
           onMouseOver={e => e.target.style.background = '#be185d'}
           onMouseOut={e => e.target.style.background = '#1a1a2e'}
-          onClick={() => navigate('/checkout')}> + Add to cart
-        </button>
+        >+ Add to cart</button>
       </div>
     </div>
   )
@@ -89,10 +88,12 @@ export default function MensPage() {
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>Men's Wear</span>
-          <button style={{
-            background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
-            padding: '0.5rem 1rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer',
-          }}>🛒 Cart (0)</button>
+          <button
+            onClick={() => navigate('/checkout')}
+            style={{
+              background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
+              padding: '0.5rem 1rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer',
+            }}>🛒 Cart (0)</button>
         </div>
       </div>
 
@@ -101,7 +102,7 @@ export default function MensPage() {
         background: 'linear-gradient(135deg, #1a1a2e 0%, #be185d 100%)',
         padding: '3rem 2rem', textAlign: 'center', color: '#fff',
       }}>
-        <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fbcfe8', marginBottom: '0.5rem' }}>Ammara Collection</p>
+        <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#fbcfe8', marginBottom: '0.5rem' }}>Amara Collection</p>
         <h1 style={{ fontSize: '2.5rem', fontWeight: '900', margin: '0 0 0.75rem', letterSpacing: '-1px' }}>Men's Wear 👔</h1>
         <p style={{ color: '#fbcfe8', fontSize: '1rem', margin: 0 }}>Polos, chinos, barongs — para sa modernong Pilipino</p>
       </div>
@@ -114,7 +115,7 @@ export default function MensPage() {
             New products
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
-            {NEW_PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            {NEW_PRODUCTS.map(p => <ProductCard key={p.id} product={p} navigate={navigate} />)}
           </div>
         </div>
 
@@ -124,7 +125,7 @@ export default function MensPage() {
             Special products
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
-            {SPECIAL_PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            {SPECIAL_PRODUCTS.map(p => <ProductCard key={p.id} product={p} navigate={navigate} />)}
           </div>
         </div>
 
@@ -136,8 +137,7 @@ export default function MensPage() {
             }}>
               <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               <div style={{
-                position: 'absolute', inset: 0,
-                background: `${cat.bg}cc`,
+                position: 'absolute', inset: 0, background: `${cat.bg}cc`,
                 display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
                 justifyContent: 'center', padding: '1.5rem',
               }}>
@@ -148,7 +148,6 @@ export default function MensPage() {
                   color: '#fff', borderRadius: '6px', padding: '0.3rem 0.8rem',
                   fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer',
                 }}>Shop now</button>
-
               </div>
             </div>
           ))}
@@ -156,9 +155,8 @@ export default function MensPage() {
 
       </div>
 
-      {/* FOOTER */}
       <footer style={{ background: '#1a1a2e', color: '#94a3b8', textAlign: 'center', padding: '2rem', fontSize: '0.85rem', marginTop: '3rem' }}>
-        © 2025 Ammara Collections.For Your Little Sunshine. 🌈🇵🇭
+        © 2025 Amara's Collections. For Your Little Sunshine. 🌈🇵🇭
       </footer>
 
     </div>
