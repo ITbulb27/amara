@@ -77,7 +77,7 @@ function ContactForm() {
       <div style={styles.card}>
         <h1 style={styles.heading}>Contact us</h1>
         <p style={styles.subheading}>We'll reply within 24 hours.</p>
-        {[['name','Full name','Juan dela Cruz','text'],['email','Email','juan@example.com','email'],['subject','Subject','What is this about?','text']].map(([id, label, placeholder, type]) => (
+        {[['name','Full name','Name','text'],['email','Email','you@example.com','email'],['subject','Subject','What is this about?','text']].map(([id, label, placeholder, type]) => (
           <div key={id} style={styles.group}>
             <label style={styles.label}>{label}</label>
             <input name={id} type={type} placeholder={placeholder} value={fields[id]} onChange={handleChange} style={{ ...styles.input, ...(errors[id] ? { borderColor: '#ef4444' } : {}) }} />

@@ -52,10 +52,10 @@ const STATS = [
 ]
 
 const WHY_US = [
-  { icon: '💰', title: 'Sulit na presyo', desc: 'Quality clothing na hindi mahal — kaya mo pa ring mag-ipon.' },
-  { icon: '🚚', title: 'Mabilis na delivery', desc: 'Luzon, Visayas, Mindanao — naaabot namin lahat ng sulok ng Pilipinas.' },
-  { icon: '🔄', title: 'Madaling palitan', desc: 'Mali ang size? Walang problema. 7-day hassle-free exchange.' },
-  { icon: '✅', title: 'Legit at trusted', desc: 'COD accepted. Libo-libo na ang nagtitiwala sa amin since 2018.' },
+  { icon: '💰', title: 'Great value for money', desc: 'Quality clothing thats not expensive — you can still save.' },
+  { icon: '🚚', title: 'Fast delivery', desc: 'Luzon, Visayas, Mindanao — we reach every corner of the Philippines.' },
+  { icon: '🔄', title: 'Easy exchanges', desc: 'Wrong size? No problem. 7-day hassle-free exchange.' },
+  { icon: '✅', title: 'Legit and trusted', desc: 'COD accepted. Thousands trust us since 2018.' },
 ]
 
 export default function App() {

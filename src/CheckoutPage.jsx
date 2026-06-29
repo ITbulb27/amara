@@ -172,7 +172,7 @@ export default function CheckoutPage() {
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.4rem' }}>Full Name</label>
               <input
-                name="name" placeholder="Juan dela Cruz" value={fields.name} onChange={handleChange}
+                name="name" placeholder="Name" value={fields.name} onChange={handleChange}
                 style={{
                   width: '100%', padding: '0.65rem 0.9rem', borderRadius: '8px',
                   border: `1.5px solid ${errors.name ? '#ef4444' : '#e5e7eb'}`,
