@@ -7,6 +7,7 @@ import MensPage from './MensPage.jsx'
 import KidsPage from './KidsPage.jsx'
 import WomenPage from './WomenPage.jsx'
 import Streetwear from './StreetwearPage.jsx'
+import Checkout from './CheckoutPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/kids" element={<KidsPage />} />
         <Route path="/women" element={<WomenPage />} />
         <Route path="/streetwear" element={<Streetwear />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

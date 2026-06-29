@@ -56,7 +56,7 @@ function ProductCard({ product }) {
         }}
           onMouseOver={e => e.target.style.background = '#7c3aed'}
           onMouseOut={e => e.target.style.background = '#1a1a2e'}
-        >+ Add to cart</button>
+        onClick={() => navigate('/checkout')}>+ Add to cart</button>
       </div>
     </div>
   )
