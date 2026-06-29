@@ -7,19 +7,22 @@ import MensPage from './MensPage.jsx'
 import KidsPage from './KidsPage.jsx'
 import WomenPage from './WomenPage.jsx'
 import Streetwear from './StreetwearPage.jsx'
-import Checkout from './CheckoutPage.jsx'
+import CheckoutPage from './CheckoutPage.jsx'
+import { CartProvider } from './CartContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/mens" element={<MensPage />} />
-        <Route path="/kids" element={<KidsPage />} />
-        <Route path="/women" element={<WomenPage />} />
-        <Route path="/streetwear" element={<Streetwear />} />
-        <Route path="/checkout" element={<Checkout />} />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/mens" element={<MensPage />} />
+          <Route path="/kids" element={<KidsPage />} />
+          <Route path="/women" element={<WomenPage />} />
+          <Route path="/streetwear" element={<Streetwear />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   </StrictMode>,
 )
