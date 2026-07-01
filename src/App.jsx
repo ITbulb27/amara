@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ContactForm from './ContactForm'
+import { useAuth } from './AuthContext'
 import clothing1 from './assets/clothing1.webp'
 import amaraLogo from './assets/amara.jpg'
 import clothing4 from './assets/clothing4.webp'
@@ -61,6 +62,7 @@ const WHY_US = [
 export default function App() {
   const [modal, setModal] = useState(null)
   const navigate = useNavigate()
+  const { user, profile } = useAuth()
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -130,10 +132,16 @@ export default function App() {
             </button>
           ))}
         </div>
-        <button onClick={() => scrollTo('contact')} style={{
-          background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
-          padding: '0.5rem 1.25rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
-        }}>Shop now</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button onClick={() => navigate(user ? '/profile' : '/login')} style={{
+            background: user ? '#fce7f3' : 'transparent', color: '#be185d', border: '1.5px solid #be185d',
+            borderRadius: '8px', padding: '0.5rem 1.1rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+          }}>{user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Log in'}</button>
+          <button onClick={() => scrollTo('contact')} style={{
+            background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
+            padding: '0.5rem 1.25rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+          }}>Shop now</button>
+        </div>
       </nav>
 
       {/* HERO — blurred logo background */}

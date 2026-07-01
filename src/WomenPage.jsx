@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import { useCart } from './CartContext'
+import { formatPrice } from './utils'
 
 const CATEGORIES = [
   { label: 'DRESSES', sub: '& CO-ORDS', bg: '#be185d', img: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80' },
@@ -35,8 +36,8 @@ function ProductCard({ product }) {
       <div style={{ padding: '1rem' }}>
         <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0 0 0.25rem' }}>{product.name}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <span style={{ fontWeight: '800', color: '#be185d', fontSize: '1rem' }}>{product.price}</span>
-          <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old_price}</span>
+          <span style={{ fontWeight: '800', color: '#be185d', fontSize: '1rem' }}>{formatPrice(product.price)}</span>
+          <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old_price ? formatPrice(product.old_price) : null}</span>
         </div>
         <button onClick={handleAdd} style={{ width: '100%', background: added ? '#10b981' : '#1a1a2e', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer', transition: 'background 0.2s' }}>
           {added ? '✓ Added!' : '+ Add to cart'}

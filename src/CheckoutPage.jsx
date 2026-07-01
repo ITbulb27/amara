@@ -1,12 +1,20 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from './CartContext'
+import { useAuth } from './AuthContext'
 import { supabase } from './supabase'
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
+  const { user, profile } = useAuth()
   const { cart, totalItems, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart()
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' })
+
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({ ...prev, name: profile?.full_name || prev.name, email: user.email || prev.email }))
+    }
+  }, [user, profile])
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -33,6 +41,7 @@ export default function CheckoutPage() {
 
     setPlacing(true)
     const { error } = await supabase.from('orders').insert([{
+      user_id: user?.id || null,
       customer_name: form.name,
       email: form.email,
       phone: form.phone,
@@ -121,7 +130,7 @@ export default function CheckoutPage() {
               <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#6b7280' }}>
                 <span>{item.name} x{item.quantity}</span>
                 <span style={{ fontWeight: '600', color: '#1a1a2e' }}>
-                  ₱{(parseFloat(item.price.replace('₱','').replace(',','')) * item.quantity).toLocaleString()}
+                  ₱{(Number(item.price) * item.quantity).toLocaleString()}
                 </span>
               </div>
             ))}

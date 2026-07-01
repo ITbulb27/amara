@@ -31,10 +31,7 @@ export function CartProvider({ children }) {
   function clearCart() { setCart([]) }
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
-  const totalPrice = cart.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('₱', '').replace(',', ''))
-    return sum + price * item.quantity
-  }, 0)
+  const totalPrice = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0)
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }}>
