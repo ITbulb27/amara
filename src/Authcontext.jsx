@@ -31,13 +31,13 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(email, password, fullName) {
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) return { error }
-    if (data.user) {
-      await supabase.from('profiles').insert([{ id: data.user.id, email, full_name: fullName, role: 'user' }])
-    }
-    return { data }
+  const { data, error } = await supabase.auth.signUp({ email, password })
+  if (error) return { error }
+  if (data.user) {
+    await supabase.from('profiles').insert([{ id: data.user.id, email, full_name: fullName, role: 'user' }])
   }
+  return { data }
+}
 
   async function signIn(email, password) {
     return await supabase.auth.signInWithPassword({ email, password })

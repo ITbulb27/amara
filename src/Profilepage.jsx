@@ -59,7 +59,7 @@ export default function ProfilePage() {
         <div>
           <h2 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '1rem' }}>Order History</h2>
           {loading ? <p style={{ color: '#9ca3af' }}>Loading…</p> : orders.length === 0 ? (
-            <div style={{ background: '#fff', borderRadius: '12px', padding: '2.5rem', textAlign: 'center', color: '#9ca3af', border: '1px solid #e5e7eb' }}>Wala pa kay orders.</div>
+            <div style={{ background: '#fff', borderRadius: '12px', padding: '2.5rem', textAlign: 'center', color: '#9ca3af', border: '1px solid #e5e7eb' }}>You don't have any orders yet.</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {orders.map(o => (
