@@ -19,6 +19,7 @@ import AdminUsers from './AdminUsers.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 import { CartProvider } from './CartContext.jsx'
 import { AuthProvider } from './AuthContext.jsx'
+import ShopPage from './ShopPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -31,6 +32,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/kids" element={<KidsPage />} />
             <Route path="/women" element={<WomenPage />} />
             <Route path="/streetwear" element={<Streetwear />} />
+            <Route path="/shop" element={<ShopPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />

@@ -31,16 +31,23 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(email, password, fullName) {
-  const { data, error } = await supabase.auth.signUp({ email, password })
-  if (error) return { error }
-  if (data.user) {
-    await supabase.from('profiles').insert([{ id: data.user.id, email, full_name: fullName, role: 'user' }])
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) return { error }
+    if (data.user) {
+      await supabase.from('profiles').insert([{ id: data.user.id, email, full_name: fullName, role: 'user' }])
+    }
+    return { data }
   }
-  return { data }
-}
 
   async function signIn(email, password) {
     return await supabase.auth.signInWithPassword({ email, password })
+  }
+
+  async function signInWithProvider(provider) {
+    return await supabase.auth.signInWithOAuth({
+      provider, // 'google' or 'facebook'
+      options: { redirectTo: window.location.origin + '/profile' }
+    })
   }
 
   async function signOut() {
@@ -50,7 +57,7 @@ export function AuthProvider({ children }) {
   const isAdmin = profile?.role === 'admin'
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isAdmin, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, isAdmin, signUp, signIn, signOut, signInWithProvider }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ContactForm from './ContactForm'
 import { useAuth } from './AuthContext'
@@ -61,10 +61,22 @@ const WHY_US = [
 
 export default function App() {
   const [modal, setModal] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
   const navigate = useNavigate()
   const { user, profile } = useAuth()
 
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth <= 768)
+      if (window.innerWidth > 768) setMenuOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const scrollTo = (id) => {
+    setMenuOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -117,32 +129,88 @@ export default function App() {
         background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(8px)',
         borderBottom: '1px solid #fce7f3',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 2rem', height: '64px',
+        padding: isMobile ? '0 1rem' : '0 2rem', height: '64px',
       }}>
-        <img src={amaraLogo} alt="Amara's Collection"
-        style={{ height: '55px', width: '55px', borderRadius: '100%', objectFit: 'cover' }} />
-        <span style={{ fontSize: '1rem', fontWeight: '1000', color: '#9d174d', letterSpacing: '0.05em' }}>
-         Amara's Collection
-        </span>
-        <div style={{ display: 'flex', gap: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0 }}>
+          <img src={amaraLogo} alt="Amara's Collection"
+            style={{ height: isMobile ? '42px' : '55px', width: isMobile ? '42px' : '55px', borderRadius: '100%', objectFit: 'cover', flexShrink: 0 }} />
+          {!isMobile && (
+            <span style={{ fontSize: '1rem', fontWeight: '1000', color: '#9d174d', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+              Amara's Collection
+            </span>
+          )}
+        </div>
+
+        {!isMobile && (
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            {NAV_LINKS.map(link => (
+              <button key={link} onClick={() => scrollTo(link.toLowerCase().replace(' ', ''))}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '500', color: '#374151' }}>
+                {link}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {!isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button onClick={() => navigate(user ? '/profile' : '/login')} style={{
+              background: user ? '#fce7f3' : 'transparent', color: '#be185d', border: '1.5px solid #be185d',
+              borderRadius: '8px', padding: '0.5rem 1.1rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+            }}>{user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Log in'}</button>
+            <button onClick={() => navigate('/shop')} style={{
+              background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
+              padding: '0.5rem 1.25rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+            }}>Shop now</button>
+          </div>
+        )}
+
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label="Toggle menu"
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', flexDirection: 'column', gap: '5px', padding: '0.5rem', flexShrink: 0,
+            }}
+          >
+            <span style={{ width: '24px', height: '2.5px', background: '#1a1a2e', borderRadius: '2px', transition: 'transform 0.2s', transform: menuOpen ? 'translateY(7.5px) rotate(45deg)' : 'none' }} />
+            <span style={{ width: '24px', height: '2.5px', background: '#1a1a2e', borderRadius: '2px', transition: 'opacity 0.2s', opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ width: '24px', height: '2.5px', background: '#1a1a2e', borderRadius: '2px', transition: 'transform 0.2s', transform: menuOpen ? 'translateY(-7.5px) rotate(-45deg)' : 'none' }} />
+          </button>
+        )}
+      </nav>
+
+      {/* MOBILE MENU DROPDOWN */}
+      {isMobile && menuOpen && (
+        <div style={{
+          position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 99,
+          background: '#fff', borderBottom: '1px solid #fce7f3',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+          display: 'flex', flexDirection: 'column', padding: '0.5rem 1rem 1.25rem',
+        }}>
           {NAV_LINKS.map(link => (
             <button key={link} onClick={() => scrollTo(link.toLowerCase().replace(' ', ''))}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '500', color: '#374151' }}>
+              style={{
+                background: 'none', border: 'none', borderBottom: '1px solid #f9fafb',
+                cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: '#374151',
+                textAlign: 'left', padding: '0.85rem 0.25rem',
+              }}>
               {link}
             </button>
           ))}
+          <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem' }}>
+            <button onClick={() => { setMenuOpen(false); navigate(user ? '/profile' : '/login') }} style={{
+              flex: 1, background: user ? '#fce7f3' : 'transparent', color: '#be185d', border: '1.5px solid #be185d',
+              borderRadius: '8px', padding: '0.65rem 1rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+            }}>{user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Log in'}</button>
+            <button onClick={() => { setMenuOpen(false); navigate('/shop') }} style={{
+              flex: 1, background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
+              padding: '0.65rem 1rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+            }}>Shop now</button>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <button onClick={() => navigate(user ? '/profile' : '/login')} style={{
-            background: user ? '#fce7f3' : 'transparent', color: '#be185d', border: '1.5px solid #be185d',
-            borderRadius: '8px', padding: '0.5rem 1.1rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
-          }}>{user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Log in'}</button>
-          <button onClick={() => scrollTo('contact')} style={{
-            background: '#be185d', color: '#fff', border: 'none', borderRadius: '8px',
-            padding: '0.5rem 1.25rem', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
-          }}>Shop now</button>
-        </div>
-      </nav>
+      )}
 
       {/* HERO — blurred logo background */}
       <section style={{

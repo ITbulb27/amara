@@ -18,6 +18,13 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -81,12 +88,17 @@ export default function CheckoutPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
       {/* HEADER */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '1rem 2rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'sticky', top: 0, zIndex: 50 }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: isMobile ? '1rem' : '1rem 2rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'sticky', top: 0, zIndex: 50 }}>
         <button onClick={() => navigate(-1)} style={{ background: '#fce7f3', border: 'none', borderRadius: '8px', padding: '0.5rem 1rem', cursor: 'pointer', color: '#be185d', fontWeight: '600' }}>← Back</button>
         <span style={{ fontWeight: '900', fontSize: '1.3rem', color: '#be185d' }}>Checkout 🛒</span>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '0 2rem', display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2rem' }}>
+      <div style={{
+        maxWidth: '900px', margin: isMobile ? '1rem auto' : '2rem auto',
+        padding: isMobile ? '0 1rem' : '0 2rem',
+        display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 380px',
+        gap: isMobile ? '1.5rem' : '2rem',
+      }}>
 
         {/* LEFT — Cart Items */}
         <div>
@@ -103,8 +115,12 @@ export default function CheckoutPage() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {cart.map(item => (
-                <div key={item.id} style={{ background: '#fff', borderRadius: '12px', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center', border: '1px solid #e5e7eb' }}>
-                  <img src={item.image} alt={item.name} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
+                <div key={item.id} style={{
+                  background: '#fff', borderRadius: '12px', padding: '1rem',
+                  display: 'flex', gap: '0.85rem', alignItems: 'center',
+                  border: '1px solid #e5e7eb', flexWrap: isMobile ? 'wrap' : 'nowrap',
+                }}>
+                  <img src={item.image} alt={item.name} style={{ width: isMobile ? '64px' : '80px', height: isMobile ? '64px' : '80px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: '600', color: '#1a1a2e', margin: '0 0 0.25rem', fontSize: '0.9rem' }}>{item.name}</p>
                     <p style={{ color: '#be185d', fontWeight: '800', margin: '0 0 0.5rem' }}>{item.price}</p>
@@ -124,7 +140,7 @@ export default function CheckoutPage() {
         {/* RIGHT — Order Summary + Form */}
         <div>
           {/* Order Summary */}
-          <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e5e7eb', marginBottom: '1rem' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', padding: isMobile ? '1.15rem' : '1.5rem', border: '1px solid #e5e7eb', marginBottom: '1rem' }}>
             <h3 style={{ fontWeight: '800', color: '#1a1a2e', margin: '0 0 1rem', fontSize: '1rem', textTransform: 'uppercase' }}>Order Summary</h3>
             {cart.map(item => (
               <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#6b7280' }}>
@@ -141,7 +157,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Delivery Form */}
-          <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e5e7eb' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', padding: isMobile ? '1.15rem' : '1.5rem', border: '1px solid #e5e7eb' }}>
             <h3 style={{ fontWeight: '800', color: '#1a1a2e', margin: '0 0 1rem', fontSize: '1rem', textTransform: 'uppercase' }}>Delivery Details</h3>
             {[['name','Full Name','Juan dela Cruz'],['email','Email','juan@example.com'],['phone','Phone','09XX-XXX-XXXX']].map(([field, label, placeholder]) => (
               <div key={field} style={{ marginBottom: '0.75rem' }}>
