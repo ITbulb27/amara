@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useCart } from './CartContext'
 import { useAuth } from './AuthContext'
-import { supabase } from './supabase'
+
+const API_URL = 'http://localhost/amara-api'
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
@@ -18,6 +19,7 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [orderError, setOrderError] = useState('')
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
 
   useEffect(() => {
@@ -47,21 +49,37 @@ export default function CheckoutPage() {
     if (cart.length === 0) return
 
     setPlacing(true)
-    const { error } = await supabase.from('orders').insert([{
-      user_id: user?.id || null,
-      customer_name: form.name,
-      email: form.email,
-      phone: form.phone,
-      address: form.address,
-      total: `₱${totalPrice.toLocaleString()}`,
-      status: 'pending'
-    }])
-    setPlacing(false)
+    setOrderError('')
 
-    if (!error) {
+    try {
+      const res = await fetch(`${API_URL}/orders.php`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: form.name,
+          email: form.email,
+          phone: form.phone,
+          address: form.address,
+          total: `₱${totalPrice.toLocaleString()}`,
+          items: cart.map(item => ({ id: item.id, quantity: item.quantity, price: item.price })),
+        }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        setOrderError(data.error || 'Something went wrong placing your order.')
+        setPlacing(false)
+        return
+      }
+
       clearCart()
       setSuccess(true)
+    } catch (err) {
+      setOrderError('Network error. Is the PHP server running?')
     }
+
+    setPlacing(false)
   }
 
   if (success) {
@@ -172,6 +190,7 @@ export default function CheckoutPage() {
                 style={{ ...inputStyle('address'), minHeight: '80px', resize: 'vertical', fontFamily: 'inherit' }} />
               {errors.address && <p style={{ fontSize: '0.75rem', color: '#ef4444', margin: '0.2rem 0 0' }}>Required</p>}
             </div>
+            {orderError && <p style={{ fontSize: '0.8rem', color: '#ef4444', marginBottom: '0.75rem' }}>{orderError}</p>}
             <button onClick={handleOrder} disabled={placing || cart.length === 0}
               style={{ width: '100%', background: cart.length === 0 ? '#d1d5db' : '#be185d', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.9rem', fontWeight: '700', fontSize: '1rem', cursor: cart.length === 0 ? 'not-allowed' : 'pointer' }}>
               {placing ? '⏳ Placing Order...' : '✅ Place Order'}

@@ -6,7 +6,6 @@ import { formatPrice } from './utils'
 
 const CATEGORIES = [
   { label: 'HOODIES', sub: '& SWEATSHIRTS', bg: '#111827', img: 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80' },
-  { label: 'GRAPHIC', sub: 'TEES', bg: '#374151', img: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&q=80' },
   { label: 'JOGGERS', sub: '& BOTTOMS', bg: '#1a1a2e', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
 ]
 
@@ -37,7 +36,7 @@ function ProductCard({ product }) {
         <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0 0 0.25rem' }}>{product.name}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <span style={{ fontWeight: '800', color: '#111827', fontSize: '1rem' }}>{formatPrice(product.price)}</span>
-          <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old_price ? formatPrice(product.old_price) : null}</span>
+          <span style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'line-through' }}>{product.old_price && product.old_price > product.price ? formatPrice(product.old_price) : null}</span>
         </div>
         <button onClick={handleAdd} style={{ width: '100%', background: added ? '#10b981' : '#111827', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.55rem', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer', transition: 'background 0.2s' }}>
           {added ? '✓ Added!' : '+ Add to cart'}
@@ -55,9 +54,18 @@ export default function StreetwearPage() {
 
   useEffect(() => {
     async function fetchProducts() {
-      const { data, error } = await supabase.from('products').select('*').eq('category', 'streetwear')
-      if (error) console.error(error)
-      else setProducts(data)
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category', 'streetwear')
+          .eq('status', 'Active')
+          .order('created_at', { ascending: false })
+        if (!error) setProducts(data || [])
+        else console.error(error)
+      } catch (err) {
+        console.error(err)
+      }
       setLoading(false)
     }
     fetchProducts()
@@ -104,6 +112,9 @@ export default function StreetwearPage() {
                   {saleProducts.map(p => <ProductCard key={p.id} product={p} />)}
                 </div>
               </div>
+            )}
+            {newProducts.length === 0 && saleProducts.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>No products yet in this category.</div>
             )}
           </>
         )}

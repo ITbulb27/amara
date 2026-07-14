@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { supabase } from './supabase'
 
 const styles = {
   page: {
@@ -44,6 +45,8 @@ function ContactForm() {
   const [fields, setFields] = useState({ name: '', email: '', subject: '', message: '' })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -51,9 +54,30 @@ function ContactForm() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const errs = validate(fields)
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
+
+    setSubmitError('')
+    setLoading(true)
+
+    const { error } = await supabase.from('contact_messages').insert([
+      {
+        name: fields.name.trim(),
+        email: fields.email.trim(),
+        subject: fields.subject.trim(),
+        message: fields.message.trim(),
+      },
+    ])
+
+    setLoading(false)
+
+    if (error) {
+      console.error('Supabase insert error:', error)
+      setSubmitError(`Error: ${error.message || 'Something went wrong sending your message.'}`)
+      return
+    }
+
     setSubmitted(true)
   }
 
@@ -89,7 +113,14 @@ function ContactForm() {
           <textarea name="message" placeholder="Write your message here…" value={fields.message} onChange={handleChange} style={{ ...styles.textarea, ...(errors.message ? { borderColor: '#ef4444' } : {}) }} />
           {errors.message && <p style={styles.errorMsg}>{errors.message}</p>}
         </div>
-        <button style={styles.button} onClick={handleSubmit}>Send message →</button>
+        {submitError && <p style={{ ...styles.errorMsg, marginTop: '0.75rem', textAlign: 'center' }}>{submitError}</p>}
+        <button
+          style={{ ...styles.button, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? 'Sending…' : 'Send message →'}
+        </button>
       </div>
     </div>
   )

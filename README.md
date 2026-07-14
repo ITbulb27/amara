@@ -1,209 +1,140 @@
-# React + Vite
+# Amara's Clothing Boutique 🌈
 
-# 🌈 Amara's Collection — Project Documentation
+Clothing for your little sunshine — an e-commerce web app for kids', men's, women's, and streetwear clothing built with React, Vite, and Supabase.
 
-> **Clothing For Your Little Sunshine**  
-> A React + Vite clothing boutique website built with JSX.
+---
+
+## ✨ Features
+
+### Customer-facing
+- **Home page** with hero section, featured collections (Men's, Women's, Kids', Streetwear), and contact form
+- **Shop page** — full product catalog with category filters, search, and add-to-cart
+- **Category pages** — dedicated pages for Men's, Women's, Kids', and Streetwear collections
+- **Shopping cart** with quantity controls, powered by React Context
+- **Checkout** with delivery details form and order placement
+- **User accounts** — register/login with email & password, or **Google / Facebook OAuth**
+- **Profile page** — view account info, current cart, and order history
+- **Fully responsive** — mobile hamburger menu, stacked layouts on small screens
+
+### Admin panel (`/admin`)
+- **Dashboard** — total products, orders, revenue, and registered users at a glance, plus recent orders
+- **Products** — add (single or bulk), edit, delete products; filter by category and search
+- **Sales** — view all orders, filter by status, update order status (pending → processing → shipped → completed/cancelled)
+- **Users** — view all registered users, promote/demote between `user` and `admin` roles
+- **Responsive admin sidebar** — collapses into a mobile-friendly top bar with hamburger menu
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite |
+| Routing | React Router (`react-router-dom`) |
+| Backend / Database | [Supabase](https://supabase.com) (Postgres, Auth, RLS) |
+| Auth | Supabase Auth — Email/Password, Google OAuth, Facebook OAuth |
+| Styling | Inline styles (no CSS framework) |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-my-react-app/
-├── src/
-│   ├── assets/
-│   │   ├── amara.jpg          # Amara's logo
-│   │   ├── clothing1.webp     # Men's wear photo
-│   │   ├── clothing2.webp     # Women's wear photo
-│   │   ├── clothing4.webp     # Kids' clothing photo
-│   │   └── hero.png
-│   ├── App.jsx                # Main landing page
-│   ├── App.css                # Global styles
-│   ├── ContactForm.jsx        # Contact/order form
-│   ├── MensPage.jsx           # Men's Wear page
-│   ├── WomenPage.jsx          # Women's Wear page
-│   ├── KidsPage.jsx           # Kids' Clothing page
-│   ├── StreetwearPage.jsx     # Streetwear page
-│   ├── main.jsx               # App entry point with React Router
-│   └── index.css              # Base CSS
-├── public/
-├── package.json
-├── vite.config.js
-└── README.md
+src/
+├── assets/                 # Images, logos
+├── App.jsx                 # Home page + navbar
+├── main.jsx                # Router setup (all <Route> definitions)
+├── supabase.js              # Supabase client init
+├── AuthContext.jsx         # Auth state, signUp/signIn/signOut/signInWithProvider
+├── CartContext.jsx         # Cart state (add/remove/update items)
+├── ProtectedRoute.jsx      # Route guard (auth required / admin only)
+│
+├── LoginPage.jsx           # Email/password + Google/Facebook login
+├── RegisterPage.jsx        # Email/password + Google/Facebook signup
+├── ProfilePage.jsx         # Account info, cart summary, order history
+├── ShopPage.jsx            # Full product catalog
+├── MensPage.jsx / WomenPage.jsx / KidsPage.jsx / StreetwearPage.jsx
+├── CheckoutPage.jsx        # Cart review + delivery form + place order
+├── ContactForm.jsx
+│
+├── AdminLayout.jsx         # Admin sidebar + responsive mobile top bar
+├── AdminDashboard.jsx      # Stats cards + recent orders
+├── AdminProducts.jsx       # Product CRUD
+├── AdminSales.jsx          # Order management
+├── AdminUsers.jsx          # User role management
+│
+└── utils.js                 # Shared helpers (e.g. formatPrice)
 ```
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 Getting Started
 
-### Step 1 — Open terminal in VS Code
-```
-Ctrl + ` (backtick)
-```
-
-### Step 2 — Go to the project folder
-```bash
-cd Desktop/jsx/my-react-app
-```
-
-### Step 3 — Install dependencies (first time only)
+### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### Step 4 — Run the development server
+### 2. Set up Supabase
+Create a project at [supabase.com](https://supabase.com), then create the following tables in the `public` schema:
+
+- **`profiles`** — `id (uuid, PK, references auth.users)`, `email (text)`, `full_name (text)`, `role (text, default: 'user')`, `created_at (timestamptz)`
+- **`products`** — `id`, `name`, `price`, `old_price`, `image`, `category`, `tag`, `stock`, `status`, `created_at`
+- **`orders`** — `id`, `customer_name`, `email`, `phone`, `address`, `total`, `status`, `user_id`, `created_at`
+
+### 3. Configure environment
+Open `src/supabase.js` and set your project credentials:
+```js
+const supabaseUrl = 'https://YOUR_PROJECT.supabase.co'
+const supabaseKey = 'YOUR_ANON_PUBLIC_KEY'
+```
+Both values are found in **Supabase Dashboard → Project Settings → API**.
+
+### 4. Enable authentication providers (optional but recommended)
+In **Supabase Dashboard → Authentication → Sign In / Providers**:
+- Enable **Google** — requires a Client ID/Secret from [Google Cloud Console](https://console.cloud.google.com/)
+- Enable **Facebook** — requires an App ID/Secret from [Meta for Developers](https://developers.facebook.com/)
+- For both, set the redirect URI to:
+  ```
+  https://YOUR_PROJECT.supabase.co/auth/v1/callback
+  ```
+
+### 5. Run the dev server
 ```bash
 npm run dev
 ```
-
-### Step 5 — Open in browser
-```
-http://localhost:5173
-```
-
-### To stop the server
-```
-Ctrl + C
-```
-
----
-
-## 📄 Pages
-
-| Page | URL | File |
-|------|-----|------|
-| Home / Landing | `/` | `App.jsx` |
-| Men's Wear | `/mens` | `MensPage.jsx` |
-| Women's Wear | `/women` | `WomenPage.jsx` |
-| Kids' Clothing | `/kids` | `KidsPage.jsx` |
-| Streetwear | `/streetwear` | `StreetwearPage.jsx` |
-
----
-
-## 🧩 Features
-
-- ✅ **Landing page** with hero, stats, collections, why us, about, contact
-- ✅ **4 collection pages** — Men's, Women's, Kids', Streetwear
-- ✅ **Modal popups** on collection cards (Women's & Streetwear)
-- ✅ **Separate pages** for Men's, Kids', Women's, Streetwear with product grids
-- ✅ **Contact form** with validation
-- ✅ **React Router** for navigation between pages
-- ✅ **Amara's logo** with blurred hero background
-- ✅ **Free Unsplash images** — no download needed
-- ✅ **Hover effects** on all cards and buttons
-- ✅ **Add to cart** buttons on product pages
-- ✅ **Responsive grid** layout
-
----
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| **React 18** | UI framework |
-| **Vite** | Build tool & dev server |
-| **JSX** | Component syntax |
-| **React Router DOM** | Page navigation |
-| **CSS-in-JS** | Inline styles |
-
----
-
-## 📦 Dependencies
-
+To access from another device on the same network (e.g. your phone):
 ```bash
-npm install react-router-dom
+npm run dev -- --host
 ```
+Then open the **Network** URL shown in the terminal from your phone's browser.
 
 ---
 
-## 🎨 Brand Colors
+## 👑 Creating the first admin account
 
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Pink | `#be185d` | Primary / buttons |
-| Light Pink | `#fce7f3` | Backgrounds / borders |
-| Dark | `#1a1a2e` | Footer / text |
-| Purple | `#7c3aed` | Kids' page accent |
-| Dark Gray | `#111827` | Streetwear theme |
+There's no self-serve "become admin" button (for security). To create your first admin:
 
----
+1. Register a normal account through the website (`/register`)
+2. In **Supabase Dashboard → Table Editor → `profiles`**, find your row
+3. Change the `role` column value from `user` to `admin`
+4. Log out and log back in on the website
+5. Visit `/admin` — you now have access to the Admin Panel
 
-## ⚠️ Common Errors & Fixes
-
-### ❌ `npm run dev` not working
-Make sure you are in the correct folder:
-```bash
-cd Desktop/jsx/my-react-app
-npm run dev
-```
-
-### ❌ Blank page / white screen
-Open browser console (F12 → Console) to see the error.
-
-### ❌ `useState` already declared
-Remove duplicate imports at the top of the file. Keep only one:
-```jsx
-import { useState } from 'react'
-```
-
-### ❌ `Cannot find module './assets/filename'`
-Check for typos — common mistake: `assests` instead of `assets`
-
-### ❌ `does not provide an export named 'default'`
-Make sure every component file ends with:
-```jsx
-export default ComponentName
-```
-
-### ❌ `useNavigate() must be used inside a Router`
-Make sure `main.jsx` has `<BrowserRouter>` wrapping everything.
+After that, you can promote other users to admin directly from **Admin Panel → Users**.
 
 ---
 
-## 📝 How to Add a New Page
+## 📱 Mobile Responsiveness
 
-1. Create new file: `src/NewPage.jsx`
-2. Add `export default function NewPage()` at the bottom
-3. In `main.jsx`, add:
-```jsx
-import NewPage from './NewPage.jsx'
-<Route path="/newpage" element={<NewPage />} />
-```
-4. In `App.jsx` COLLECTIONS, add:
-```jsx
-link: '/newpage',
-```
+The site adapts to mobile (≤768px) with:
+- Hamburger navigation menu on the main site
+- Collapsible admin sidebar (becomes a top bar)
+- Stacked (single-column) layouts on Profile and Checkout pages instead of side-by-side columns
 
 ---
 
-## 🖼️ How to Add Your Own Photos
+## 📝 Notes
 
-1. Save photo in `src/assets/` folder
-2. Import it in your JSX file:
-```jsx
-import myPhoto from './assets/myPhoto.jpg'
-```
-3. Use it as image src:
-```jsx
-<img src={myPhoto} alt="description" />
-```
-
----
-
-*© 2025 Amara's Collection. Clothing For Your Little Sunshine. 🌈*
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Email confirmation is enabled by default in Supabase — new sign-ups must confirm their email before logging in, unless disabled in **Authentication → Providers → Email**.
+- Currency is displayed in Philippine Peso (₱) via the `formatPrice()` helper in `utils.js`.

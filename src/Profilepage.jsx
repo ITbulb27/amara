@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthContext'
 import { useCart } from './CartContext'
-import { supabase } from './supabase'
+
+const API_URL = 'http://localhost/amara-api'
 
 export default function ProfilePage() {
   const { user, profile, signOut } = useAuth()
@@ -21,8 +22,13 @@ export default function ProfilePage() {
   useEffect(() => {
     async function load() {
       if (!user) return
-      const { data } = await supabase.from('orders').select('*').eq('email', user.email).order('created_at', { ascending: false })
-      setOrders(data || [])
+      try {
+        const res = await fetch(`${API_URL}/orders.php?email=${encodeURIComponent(user.email)}`, { credentials: 'include' })
+        const json = await res.json()
+        setOrders(json.data || [])
+      } catch (err) {
+        console.error('Failed to load orders:', err)
+      }
       setLoading(false)
     }
     load()

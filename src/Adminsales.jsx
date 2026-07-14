@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
 import { formatPrice } from './utils'
 
+const API_URL = 'http://localhost/amara-api'
 const STATUS_OPTS = ['pending', 'processing', 'shipped', 'completed', 'cancelled']
 const statusColor = { pending: ['#fef3c7', '#92400e'], processing: ['#dbeafe', '#1e40af'], shipped: ['#ede9fe', '#5b21b6'], completed: ['#d1fae5', '#065f46'], cancelled: ['#fee2e2', '#991b1b'] }
 
@@ -14,14 +14,32 @@ export default function AdminSales() {
 
   async function loadOrders() {
     setLoading(true)
-    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false })
-    if (!error) setOrders(data)
+    try {
+      const res = await fetch(`${API_URL}/orders.php?admin=1`, { credentials: 'include' })
+      const json = await res.json()
+      setOrders(json.data || [])
+    } catch (err) {
+      console.error('Failed to load orders:', err)
+    }
     setLoading(false)
   }
 
   async function updateStatus(id, status) {
-    await supabase.from('orders').update({ status }).eq('id', id)
-    setOrders(orders.map(o => o.id === id ? { ...o, status } : o))
+    try {
+      const res = await fetch(`${API_URL}/orders.php`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      })
+      if (!res.ok) {
+        console.error('Failed to update status')
+        return
+      }
+      setOrders(orders.map(o => o.id === id ? { ...o, status } : o))
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const filtered = statusFilter === 'All' ? orders : orders.filter(o => o.status === statusFilter)

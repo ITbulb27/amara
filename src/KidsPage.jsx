@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
+const API_URL = 'http://localhost/amara-api'
 import { useCart } from './CartContext'
 import { formatPrice } from './utils'
 
@@ -55,9 +55,13 @@ export default function KidsPage() {
 
   useEffect(() => {
     async function fetchProducts() {
-      const { data, error } = await supabase.from('products').select('*').eq('category', 'kids')
-      if (error) console.error(error)
-      else setProducts(data)
+      try {
+        const res = await fetch(`${API_URL}/products.php?category=kids`)
+        const json = await res.json()
+        setProducts(json.data || [])
+      } catch (err) {
+        console.error(err)
+      }
       setLoading(false)
     }
     fetchProducts()

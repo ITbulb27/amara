@@ -7,6 +7,7 @@ import amaraLogo from './assets/amara.jpg'
 import clothing4 from './assets/clothing4.webp'
 import clothing2 from './assets/clothing2.webp'
 import clothing3 from './assets/clothing3.webp'
+import FloatingChatWidget from './FloatingChatWidget'
 
 const NAV_LINKS = ['Collections', 'About', 'Why Us', 'Contact']
 
@@ -46,10 +47,11 @@ const COLLECTIONS = [
 ]
 
 const STATS = [
-  { value: '5,000+', label: 'Happy customers' },
-  { value: '200+', label: 'Styles available' },
-  { value: '4.9★', label: 'Average rating' },
-  { value: '3 days', label: 'Nationwide delivery' },
+  { icon: '👥', value: '5,000+', label: 'Happy customers' },
+  { icon: '👗', value: '200+', label: 'Styles available' },
+  { icon: '⭐', value: '4.9★', label: 'Average rating' },
+  { icon: '🚚', value: '3 days', label: 'Nationwide delivery' },
+  { icon: '🛡️', value: '100%', label: 'Secure shopping' },
 ]
 
 const WHY_US = [
@@ -267,12 +269,23 @@ export default function App() {
       </section>
 
       {/* STATS */}
-      <section style={{ background: '#be185d', padding: '4rem 2rem' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '2rem', textAlign: 'center' }}>
-          {STATS.map(({ value, label }) => (
-            <div key={label}>
-              <div style={{ fontSize: '2.2rem', fontWeight: '900', color: '#fce7f3', lineHeight: '1' }}>{value}</div>
-              <div style={{ fontSize: '0.9rem', color: '#fbcfe8', marginTop: '0.5rem' }}>{label}</div>
+      <section style={{ background: 'linear-gradient(135deg, #ec4899 0%, #be185d 45%, #7e22ce 100%)', padding: '4rem 2rem' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}>
+          {STATS.map(({ icon, value, label }, i) => (
+            <div key={label} style={{ display: 'flex', alignItems: 'flex-start' }}>
+              <div style={{ textAlign: 'center', padding: '0 1.75rem', minWidth: '160px' }}>
+                <div style={{
+                  width: '56px', height: '56px', borderRadius: '50%',
+                  border: '2px solid rgba(255,255,255,0.6)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '1.5rem', margin: '0 auto 1rem',
+                }}>{icon}</div>
+                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', lineHeight: '1' }}>{value}</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff', marginTop: '0.5rem' }}>{label}</div>
+              </div>
+              {i < STATS.length - 1 && (
+                <div style={{ width: '1px', height: '90px', background: 'rgba(255,255,255,0.35)', marginTop: '1rem' }} />
+              )}
             </div>
           ))}
         </div>

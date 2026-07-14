@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from './supabase'
 
+const API_URL = 'http://localhost/amara-api'
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
@@ -9,49 +9,84 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
-    })
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else { setProfile(null); setLoading(false) }
-    })
-
-    return () => listener.subscription.unsubscribe()
+    checkSession()
   }, [])
 
-  async function fetchProfile(userId) {
-    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single()
-    setProfile(data)
-    setLoading(false)
+  async function checkSession() {
+    try {
+      const res = await fetch(`${API_URL}/check-session.php`, {
+        credentials: 'include', // important: sends the session cookie
+      })
+      const data = await res.json()
+      if (data.user) {
+        setUser({ id: data.user.id, email: data.user.email })
+        setProfile({ full_name: data.user.full_name, role: data.user.role })
+      } else {
+        setUser(null)
+        setProfile(null)
+      }
+    } catch (err) {
+      console.error('check-session error:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function signUp(email, password, fullName) {
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) return { error }
-    if (data.user) {
-      await supabase.from('profiles').insert([{ id: data.user.id, email, full_name: fullName, role: 'user' }])
+    try {
+      const res = await fetch(`${API_URL}/register.php`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName }),
+      })
+      const data = await res.json()
+      if (!res.ok) return { error: { message: data.error || 'Registration failed.' } }
+
+      setUser({ id: data.user.id, email: data.user.email })
+      setProfile({ full_name: data.user.full_name, role: data.user.role })
+      return { data }
+    } catch (err) {
+      return { error: { message: 'Network error. Is the PHP server running?' } }
     }
-    return { data }
   }
 
   async function signIn(email, password) {
-    return await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const res = await fetch(`${API_URL}/login.php`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) return { error: { message: data.error || 'Login failed.' } }
+
+      setUser({ id: data.user.id, email: data.user.email })
+      setProfile({ full_name: data.user.full_name, role: data.user.role })
+      return { data }
+    } catch (err) {
+      return { error: { message: 'Network error. Is the PHP server running?' } }
+    }
   }
 
+  // NOTE: Google/Facebook login isn't supported yet in the PHP version.
+  // This is a stub so LoginPage/RegisterPage don't crash if the buttons are clicked.
   async function signInWithProvider(provider) {
-    return await supabase.auth.signInWithOAuth({
-      provider, // 'google' or 'facebook'
-      options: { redirectTo: window.location.origin + '/profile' }
-    })
+    return { error: { message: `${provider} login dili pa available sa bag-ong system.` } }
   }
 
   async function signOut() {
-    await supabase.auth.signOut()
+    try {
+      await fetch(`${API_URL}/logout.php`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch (err) {
+      console.error('logout error:', err)
+    }
+    setUser(null)
+    setProfile(null)
   }
 
   const isAdmin = profile?.role === 'admin'

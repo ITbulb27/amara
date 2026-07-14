@@ -33,7 +33,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/women" element={<WomenPage />} />
             <Route path="/streetwear" element={<Streetwear />} />
             <Route path="/shop" element={<ShopPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} /> 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

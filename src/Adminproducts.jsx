@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
 import { formatPrice } from './utils'
 
+const API_URL = 'http://localhost/amara-api'
 const CATEGORIES = ['mens', 'women', 'kids', 'streetwear']
 const STATUS_OPTS = ['Active', 'Draft', 'Out of stock']
 const emptyRow = () => ({ name: '', price: '', old_price: '', image: '', category: 'mens', tag: '', stock: 0, status: 'Active' })
@@ -26,9 +26,44 @@ const s = {
   formRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' },
   tabs: { display: 'flex', gap: 0, borderBottom: '1px solid #e5e7eb', marginBottom: '1rem' },
   tab: (active) => ({ padding: '0.5rem 1rem', fontSize: '0.85rem', cursor: 'pointer', border: 'none', background: 'none', borderBottom: active ? '2px solid #be185d' : '2px solid transparent', color: active ? '#be185d' : '#6b7280', fontWeight: active ? 700 : 500 }),
+  uploadBox: { border: '1.5px dashed #e5e7eb', borderRadius: '10px', padding: '1rem', textAlign: 'center', cursor: 'pointer', background: '#fafafa' },
+  previewImg: { width: '100%', maxHeight: '160px', objectFit: 'contain', borderRadius: '8px', marginBottom: '0.6rem', background: '#f3f4f6' },
 }
 
 function ProductForm({ row, onChange }) {
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+
+  async function handleFileSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadError('')
+    setUploading(true)
+
+    const formData = new FormData()
+    formData.append('image', file)
+
+    try {
+      const res = await fetch(`${API_URL}/upload-image.php`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        setUploadError('❌ ' + (data.error || 'Upload failed.'))
+        setUploading(false)
+        return
+      }
+
+      onChange({ ...row, image: data.url })
+    } catch (err) {
+      setUploadError('❌ Network error during upload.')
+    }
+    setUploading(false)
+  }
+
   return (
     <div style={{ border: '1px solid #f0f0f0', borderRadius: '10px', padding: '1rem', marginBottom: '0.75rem' }}>
       <div style={s.formGroup}><label style={s.formLabel}>Product name</label><input style={s.formInput} value={row.name} onChange={e => onChange({ ...row, name: e.target.value })} /></div>
@@ -49,14 +84,35 @@ function ProductForm({ row, onChange }) {
         </div>
       </div>
       <div style={s.formRow}>
-        <div style={s.formGroup}><label style={s.formLabel}>Stock qty</label><input type="number" style={s.formInput} value={row.stock} onChange={e => onChange({ ...row, stock: e.target.value })} /></div>
+        <div style={s.formGroup}><label style={s.formLabel}>Stock quantity</label><input type="number" style={s.formInput} value={row.stock} onChange={e => onChange({ ...row, stock: e.target.value })} /></div>
         <div style={s.formGroup}><label style={s.formLabel}>Status</label>
           <select style={s.formInput} value={row.status} onChange={e => onChange({ ...row, status: e.target.value })}>
             {STATUS_OPTS.map(o => <option key={o}>{o}</option>)}
           </select>
         </div>
       </div>
-      <div style={s.formGroup}><label style={s.formLabel}>Image URL</label><input style={s.formInput} value={row.image} onChange={e => onChange({ ...row, image: e.target.value })} placeholder="https://…" /></div>
+
+      <div style={s.formGroup}>
+        <label style={s.formLabel}>Product Image</label>
+
+        {row.image && (
+          <img src={row.image} alt="preview" style={s.previewImg} onError={e => { e.target.style.display = 'none' }} />
+        )}
+
+        <label style={s.uploadBox}>
+          <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} disabled={uploading} />
+          <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: 600 }}>
+            {uploading ? '⏳ Ni-uploading…' : row.image ? '📷 Change image' : '📷 Click to upload image'}
+          </span>
+        </label>
+
+        {uploadError && <p style={{ fontSize: '0.75rem', color: '#ef4444', margin: '0.4rem 0 0' }}>{uploadError}</p>}
+
+        <div style={{ marginTop: '0.6rem' }}>
+          <label style={{ ...s.formLabel, fontSize: '0.72rem' }}>or paste the image URL</label>
+          <input style={s.formInput} value={row.image} onChange={e => onChange({ ...row, image: e.target.value })} placeholder="https://…" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -77,8 +133,13 @@ export default function AdminProducts() {
 
   async function loadProducts() {
     setLoading(true)
-    const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-    if (!error) setProducts(data)
+    try {
+      const res = await fetch(`${API_URL}/products.php?admin=1`, { credentials: 'include' })
+      const data = await res.json()
+      setProducts(data.data || [])
+    } catch (err) {
+      console.error('Failed to load products:', err)
+    }
     setLoading(false)
   }
 
@@ -100,31 +161,61 @@ export default function AdminProducts() {
       .filter(r => r.name.trim())
       .map(r => ({ ...r, price: Number(r.price) || 0, old_price: r.old_price ? Number(r.old_price) : null, stock: Number(r.stock) || 0 }))
     if (payload.length === 0) { showToast('⚠️ Butangi og name ang product.'); return }
+
     setSaving(true)
-    const { error } = await supabase.from('products').insert(payload)
+    try {
+      for (const product of payload) {
+        await fetch(`${API_URL}/products.php`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(product),
+        })
+      }
+      setAddOpen(false)
+      loadProducts()
+      showToast(`✅ ${payload.length} product(s) added.`)
+    } catch (err) {
+      showToast('❌ Failed to save products.')
+    }
     setSaving(false)
-    if (error) { showToast('❌ ' + error.message); return }
-    setAddOpen(false)
-    loadProducts()
-    showToast(`✅ ${payload.length} product(s) added.`)
   }
 
   async function handleUpdate(form) {
     const { id, ...rest } = form
-    const payload = { ...rest, price: Number(rest.price) || 0, old_price: rest.old_price ? Number(rest.old_price) : null, stock: Number(rest.stock) || 0 }
-    const { error } = await supabase.from('products').update(payload).eq('id', id)
-    if (error) { showToast('❌ ' + error.message); return }
-    setEditProduct(null)
-    loadProducts()
-    showToast('✅ Product updated.')
+    const payload = { id, ...rest, price: Number(rest.price) || 0, old_price: rest.old_price ? Number(rest.old_price) : null, stock: Number(rest.stock) || 0 }
+    try {
+      const res = await fetch(`${API_URL}/products.php`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        showToast('❌ ' + (data.error || 'Update failed.'))
+        return
+      }
+      setEditProduct(null)
+      loadProducts()
+      showToast('✅ Product updated.')
+    } catch (err) {
+      showToast('❌ Network error.')
+    }
   }
 
   async function handleDelete(id) {
     if (!confirm('Delete this product?')) return
-    const { error } = await supabase.from('products').delete().eq('id', id)
-    if (error) { showToast('❌ ' + error.message); return }
-    loadProducts()
-    showToast('🗑️ Product deleted.')
+    try {
+      await fetch(`${API_URL}/products.php?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      loadProducts()
+      showToast('🗑️ Product deleted.')
+    } catch (err) {
+      showToast('❌ Failed to delete.')
+    }
   }
 
   return (
