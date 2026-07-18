@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
 import { useCart } from './CartContext'
 import { formatPrice } from './utils'
+
+const API_URL = 'http://localhost/amara-api'
 
 const CATEGORIES = [
   { label: 'HOODIES', sub: '& SWEATSHIRTS', bg: '#111827', img: 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80' },
@@ -55,14 +56,12 @@ export default function StreetwearPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('category', 'streetwear')
-          .eq('status', 'Active')
-          .order('created_at', { ascending: false })
-        if (!error) setProducts(data || [])
-        else console.error(error)
+        const res = await fetch(`${API_URL}/products.php`)
+        const json = await res.json()
+        const streetwear = (json.data || [])
+          .filter(p => p.category === 'streetwear' && p.status === 'Active')
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        setProducts(streetwear)
       } catch (err) {
         console.error(err)
       }

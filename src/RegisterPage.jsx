@@ -43,19 +43,19 @@ export default function RegisterPage() {
 
         <div style={{ marginBottom: '1.1rem' }}>
           <label style={labelStyle}>Full name</label>
-          <input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Juan dela Cruz" style={inputStyle} />
+          <input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Name" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1.1rem' }}>
           <label style={labelStyle}>Email</label>
-          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" style={inputStyle} />
+          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1.1rem' }}>
           <label style={labelStyle}>Password</label>
-          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="At least 6 characters" style={inputStyle} />
+          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1.25rem' }}>
           <label style={labelStyle}>Confirm password</label>
-          <input name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="••••••••" style={inputStyle} />
+          <input name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="At least 6 characters" style={inputStyle} />
         </div>
 
         {error && <p style={{ fontSize: '0.85rem', color: '#ef4444', marginBottom: '1rem' }}>{error}</p>}

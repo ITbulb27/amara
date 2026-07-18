@@ -269,22 +269,22 @@ export default function App() {
       </section>
 
       {/* STATS */}
-      <section style={{ background: 'linear-gradient(135deg, #ec4899 0%, #be185d 45%, #7e22ce 100%)', padding: '4rem 2rem' }}>
+      <section style={{ background: 'linear-gradient(135deg, #ec4899 0%, #be185d 45%, #7e22ce 100%)', padding: isMobile ? '2rem 1rem' : '4rem 2rem' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}>
           {STATS.map(({ icon, value, label }, i) => (
             <div key={label} style={{ display: 'flex', alignItems: 'flex-start' }}>
-              <div style={{ textAlign: 'center', padding: '0 1.75rem', minWidth: '160px' }}>
+              <div style={{ textAlign: 'center', padding: isMobile ? '0 0.75rem' : '0 1.75rem', minWidth: isMobile ? '100px' : '160px' }}>
                 <div style={{
-                  width: '56px', height: '56px', borderRadius: '50%',
+                  width: isMobile ? '38px' : '56px', height: isMobile ? '38px' : '56px', borderRadius: '50%',
                   border: '2px solid rgba(255,255,255,0.6)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1.5rem', margin: '0 auto 1rem',
+                  fontSize: isMobile ? '1rem' : '1.5rem', margin: isMobile ? '0 auto 0.5rem' : '0 auto 1rem',
                 }}>{icon}</div>
-                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', lineHeight: '1' }}>{value}</div>
-                <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff', marginTop: '0.5rem' }}>{label}</div>
+                <div style={{ fontSize: isMobile ? '1.15rem' : '2rem', fontWeight: '900', color: '#fff', lineHeight: '1' }}>{value}</div>
+                <div style={{ fontSize: isMobile ? '0.7rem' : '0.9rem', fontWeight: '600', color: '#fff', marginTop: isMobile ? '0.3rem' : '0.5rem' }}>{label}</div>
               </div>
               {i < STATS.length - 1 && (
-                <div style={{ width: '1px', height: '90px', background: 'rgba(255,255,255,0.35)', marginTop: '1rem' }} />
+                <div style={{ width: '1px', height: isMobile ? '55px' : '90px', background: 'rgba(255,255,255,0.35)', marginTop: isMobile ? '0.6rem' : '1rem' }} />
               )}
             </div>
           ))}
@@ -292,24 +292,24 @@ export default function App() {
       </section>
 
       {/* COLLECTIONS */}
-      <section id="collections" style={{ padding: '6rem 2rem', background: '#fff' }}>
+      <section id="collections" style={{ padding: isMobile ? '2.5rem 1rem' : '6rem 2rem', background: '#fff' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-          <p style={{ color: '#be185d', fontWeight: '700', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Our product</p>
-          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', letterSpacing: '-0.5px', margin: '0 0 3rem', color: '#1a1a2e' }}>Collection for everyone</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
+          <p style={{ color: '#be185d', fontWeight: '700', fontSize: isMobile ? '0.7rem' : '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Our product</p>
+          <h2 style={{ fontSize: isMobile ? '1.4rem' : '2.25rem', fontWeight: '900', letterSpacing: '-0.5px', margin: isMobile ? '0 0 1.5rem' : '0 0 3rem', color: '#1a1a2e' }}>Collection for everyone</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(auto-fit, minmax(140px, 1fr))' : 'repeat(auto-fit, minmax(220px, 1fr))', gap: isMobile ? '0.85rem' : '1.5rem' }}>
             {COLLECTIONS.map((item) => (
               <div key={item.title} onClick={() => handleCardClick(item)} style={{
-                background: '#fff', borderRadius: '14px', padding: '2rem',
+                background: '#fff', borderRadius: isMobile ? '10px' : '14px', padding: isMobile ? '0.85rem' : '2rem',
                 border: '1px solid #fce7f3', cursor: 'pointer', transition: 'all 0.2s',
               }}
                 onMouseOver={e => { e.currentTarget.style.boxShadow = '0 8px 30px rgba(190,24,93,0.12)'; e.currentTarget.style.transform = 'translateY(-4px)' }}
                 onMouseOut={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
               >
-                {item.img && <img src={item.img} alt={item.title} style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }} />}
-                <div style={{ fontSize: '2.2rem', marginBottom: '1rem' }}>{item.icon}</div>
-                <h3 style={{ fontWeight: '700', fontSize: '1.05rem', marginBottom: '0.6rem', color: '#1a1a2e' }}>{item.title}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: '1.6', margin: '0 0 1rem' }}>{item.desc}</p>
-                <span style={{ fontSize: '0.8rem', color: '#be185d', fontWeight: '600' }}>
+                {item.img && <img src={item.img} alt={item.title} style={{ width: '100%', height: isMobile ? '90px' : '160px', objectFit: 'cover', borderRadius: '8px', marginBottom: isMobile ? '0.5rem' : '1rem' }} />}
+                <div style={{ fontSize: isMobile ? '1.3rem' : '2.2rem', marginBottom: isMobile ? '0.4rem' : '1rem' }}>{item.icon}</div>
+                <h3 style={{ fontWeight: '700', fontSize: isMobile ? '0.85rem' : '1.05rem', marginBottom: isMobile ? '0.3rem' : '0.6rem', color: '#1a1a2e' }}>{item.title}</h3>
+                <p style={{ fontSize: isMobile ? '0.72rem' : '0.9rem', color: '#64748b', lineHeight: '1.5', margin: isMobile ? '0 0 0.5rem' : '0 0 1rem' }}>{item.desc}</p>
+                <span style={{ fontSize: isMobile ? '0.7rem' : '0.8rem', color: '#be185d', fontWeight: '600' }}>
                   {item.link ? 'See all →' : 'Tingnan ang presyo →'}
                 </span>
               </div>

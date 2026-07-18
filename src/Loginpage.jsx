@@ -33,11 +33,11 @@ export default function LoginPage() {
 
         <div style={{ marginBottom: '1.1rem' }}>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.35rem' }}>Email</label>
-          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" style={inputStyle} />
+          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1.25rem' }}>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.35rem' }}>Password</label>
-          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••••" style={inputStyle} />
+          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" style={inputStyle} />
         </div>
 
         {error && <p style={{ fontSize: '0.85rem', color: '#ef4444', marginBottom: '1rem' }}>{error}</p>}

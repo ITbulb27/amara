@@ -7,6 +7,13 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [error, setError] = useState('')
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => { loadUsers() }, [])
 
@@ -56,24 +63,25 @@ export default function AdminUsers() {
     (u.full_name || '').toLowerCase().includes(search.toLowerCase())
   )
 
-  const th = { padding: '0.65rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', borderBottom: '1px solid #f0f0f0', background: '#fafafa' }
-  const td = { padding: '0.65rem 1rem', borderBottom: '1px solid #f9f9f9' }
+  const th = { padding: isMobile ? '0.5rem 0.65rem' : '0.65rem 1rem', textAlign: 'left', fontSize: isMobile ? '0.62rem' : '0.7rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', borderBottom: '1px solid #f0f0f0', background: '#fafafa', whiteSpace: 'nowrap' }
+  const td = { padding: isMobile ? '0.5rem 0.65rem' : '0.65rem 1rem', borderBottom: '1px solid #f9f9f9' }
 
   return (
     <div>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '1.25rem' }}>Users</h1>
+      <h1 style={{ fontSize: isMobile ? '1.15rem' : '1.5rem', fontWeight: '800', color: '#1a1a2e', marginBottom: isMobile ? '1rem' : '1.25rem' }}>Users</h1>
 
       {error && (
-        <div style={{ background: '#fef3c7', color: '#92400e', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.85rem', marginBottom: '1rem' }}>
+        <div style={{ background: '#fef3c7', color: '#92400e', padding: isMobile ? '0.6rem 0.8rem' : '0.75rem 1rem', borderRadius: '10px', fontSize: isMobile ? '0.75rem' : '0.85rem', marginBottom: '1rem' }}>
           {error}
         </div>
       )}
 
       <input placeholder="Search users…" value={search} onChange={e => setSearch(e.target.value)}
-        style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '0.85rem', marginBottom: '1rem', width: '280px', maxWidth: '100%' }} />
+        style={{ padding: isMobile ? '0.45rem 0.65rem' : '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: isMobile ? '0.8rem' : '0.85rem', marginBottom: '1rem', width: isMobile ? '100%' : '280px', maxWidth: '100%', boxSizing: 'border-box' }} />
 
       {loading ? <p style={{ color: '#9ca3af' }}>Loading…</p> : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem', background: '#fff', borderRadius: '12px', overflow: 'hidden', border: '1px solid #f0f0f0' }}>
+        <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid #f0f0f0' }}>
+        <table style={{ width: '100%', minWidth: isMobile ? '560px' : 'auto', borderCollapse: 'collapse', fontSize: isMobile ? '0.75rem' : '0.83rem', background: '#fff' }}>
           <thead>
             <tr>{['Name', 'Email', 'Role', 'Joined', ''].map(h => <th key={h} style={th}>{h}</th>)}</tr>
           </thead>
@@ -96,6 +104,7 @@ export default function AdminUsers() {
             {filtered.length === 0 && !error && <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>No users found.</td></tr>}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   )

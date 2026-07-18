@@ -128,6 +128,13 @@ export default function AdminProducts() {
   const [rows, setRows] = useState([emptyRow()])
   const [toast, setToast] = useState('')
   const [saving, setSaving] = useState(false)
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => { loadProducts() }, [])
 
@@ -220,22 +227,23 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#1a1a2e', margin: 0 }}>Products</h1>
-        <button style={s.btnPrimary} onClick={openAdd}>+ Add Product</button>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMobile ? '1rem' : '1.25rem' }}>
+        <h1 style={{ fontSize: isMobile ? '1.15rem' : '1.5rem', fontWeight: '800', color: '#1a1a2e', margin: 0 }}>Products</h1>
+        <button style={{ ...s.btnPrimary, ...(isMobile && { padding: '0.45rem 0.85rem', fontSize: '0.8rem' }) }} onClick={openAdd}>+ Add Product</button>
       </div>
 
-      <div style={s.toolbar}>
-        <input style={s.input} placeholder="Search products…" value={search} onChange={e => setSearch(e.target.value)} />
-        <select style={s.input} value={catFilter} onChange={e => setCatFilter(e.target.value)}>
+      <div style={{ ...s.toolbar, ...(isMobile && { gap: '0.5rem', marginBottom: '1rem' }) }}>
+        <input style={{ ...s.input, ...(isMobile && { flex: '1 1 100%', fontSize: '0.8rem' }) }} placeholder="Search products…" value={search} onChange={e => setSearch(e.target.value)} />
+        <select style={{ ...s.input, ...(isMobile && { fontSize: '0.8rem' }) }} value={catFilter} onChange={e => setCatFilter(e.target.value)}>
           <option>All</option>
           {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <span style={{ marginLeft: 'auto', fontSize: '0.82rem', color: '#6b7280' }}>{filtered.length} products</span>
+        <span style={{ marginLeft: isMobile ? 0 : 'auto', fontSize: isMobile ? '0.75rem' : '0.82rem', color: '#6b7280' }}>{filtered.length} products</span>
       </div>
 
       {loading ? <p style={{ color: '#9ca3af' }}>Loading…</p> : (
-        <table style={s.table}>
+        <div style={{ overflowX: 'auto', borderRadius: '12px', border: isMobile ? '1px solid #f0f0f0' : 'none' }}>
+        <table style={{ ...s.table, ...(isMobile && { minWidth: '620px', fontSize: '0.75rem', border: 'none', borderRadius: 0 }) }}>
           <thead>
             <tr>
               <th style={s.th}>Product</th><th style={s.th}>Category</th><th style={s.th}>Price</th>
@@ -269,6 +277,7 @@ export default function AdminProducts() {
             {filtered.length === 0 && <tr><td colSpan={6} style={{ ...s.td, textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>No products found.</td></tr>}
           </tbody>
         </table>
+        </div>
       )}
 
       {addOpen && (
