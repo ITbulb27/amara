@@ -61,6 +61,23 @@ const WHY_US = [
   { icon: '✅', title: 'Legit and trusted', desc: 'COD accepted. Thousands trust us since 2018.' },
 ]
 
+const TESTIMONIALS = [
+  { name: 'Maria Santos', location: 'Cebu City', rating: 5, quote: 'Sobrang ganda ng quality sa price! Sakto gyud ang sizing ug fast ang delivery. Sure order na sad ko ugma.', initial: 'M' },
+  { name: 'Jerome Villanueva', location: 'Davao City', rating: 5, quote: 'Bought barong for my kid brother, ang gwapo sa design ug murag mas expensive tan-awon. Legit seller!', initial: 'J' },
+  { name: 'Angel Dela Cruz', location: 'Cagayan de Oro', rating: 5, quote: 'Ang customer service kay tabang kaayo, gitubag dayon akong questions. Ang streetwear collection top tier!', initial: 'A' },
+  { name: 'Kristine Bautista', location: 'Iloilo City', rating: 4, quote: 'Nice ang packaging ug on time ang delivery. Balik-balik ko mag order kay trusted na jud sila.', initial: 'K' },
+]
+
+function StarRating({ rating }) {
+  return (
+    <div style={{ display: 'flex', gap: '2px', marginBottom: '0.85rem' }}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i} style={{ fontSize: '0.95rem', color: i < rating ? '#f59e0b' : '#e5e7eb' }}>★</span>
+      ))}
+    </div>
+  )
+}
+
 export default function App() {
   const [modal, setModal] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -330,6 +347,39 @@ Why us</p>
                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>{icon}</div>
                 <h3 style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.5rem', color: '#1a1a2e' }}>{title}</h3>
                 <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: '1.6', margin: 0 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section id="testimonials" style={{ padding: isMobile ? '2.5rem 1rem' : '6rem 2rem', background: '#fff' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <p style={{ color: '#be185d', fontWeight: '700', fontSize: isMobile ? '0.7rem' : '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem', textAlign: 'center' }}>Testimonials</p>
+          <h2 style={{ fontSize: isMobile ? '1.4rem' : '2.25rem', fontWeight: '900', letterSpacing: '-0.5px', margin: isMobile ? '0 0 1.5rem' : '0 0 3rem', color: '#1a1a2e', textAlign: 'center' }}>What our customers say 💬</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(230px, 1fr))', gap: isMobile ? '1rem' : '1.5rem' }}>
+            {TESTIMONIALS.map(t => (
+              <div key={t.name} style={{
+                background: '#fff0f6', borderRadius: isMobile ? '12px' : '14px',
+                padding: isMobile ? '1.25rem' : '1.75rem', border: '1px solid #fce7f3',
+                display: 'flex', flexDirection: 'column',
+              }}>
+                <StarRating rating={t.rating} />
+                <p style={{ fontSize: isMobile ? '0.85rem' : '0.92rem', color: '#374151', lineHeight: '1.65', margin: '0 0 1.25rem', flex: 1 }}>
+                  “{t.quote}”
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <div style={{
+                    width: '38px', height: '38px', borderRadius: '50%', background: '#be185d',
+                    color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: '800', fontSize: '0.95rem', flexShrink: 0,
+                  }}>{t.initial}</div>
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '0.85rem', color: '#1a1a2e' }}>{t.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{t.location}</div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
