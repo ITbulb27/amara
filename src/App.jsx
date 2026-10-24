@@ -7,8 +7,6 @@ import amaraLogo from './assets/amara.jpg'
 import clothing4 from './assets/clothing4.webp'
 import clothing2 from './assets/clothing2.webp'
 import clothing3 from './assets/clothing3.webp'
-import FloatingChatWidget from './FloatingChatWidget'
-
 const NAV_LINKS = ['Collections', 'About', 'Why Us', 'Contact']
 
 const COLLECTIONS = [

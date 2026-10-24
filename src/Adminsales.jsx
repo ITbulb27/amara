@@ -15,14 +15,6 @@ export default function AdminSales() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
-  useEffect(() => {
-    function handleResize() { setIsMobile(window.innerWidth <= 768) }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => { loadOrders() }, [])
-
   async function loadOrders() {
     setLoading(true)
     try {
@@ -34,6 +26,15 @@ export default function AdminSales() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { loadOrders() }, [])
 
   async function updateStatus(id, status) {
     const prevOrders = orders
@@ -48,7 +49,7 @@ export default function AdminSales() {
         body: JSON.stringify({ id, status }),
       })
       let data = null
-      try { data = await res.json() } catch (_) { /* no body */ }
+      try { data = await res.json() } catch { /* no body */ }
 
       if (!res.ok) {
         setOrders(prevOrders) // revert since it didn't actually save

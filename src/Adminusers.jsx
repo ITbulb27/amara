@@ -9,14 +9,6 @@ export default function AdminUsers() {
   const [error, setError] = useState('')
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
 
-  useEffect(() => {
-    function handleResize() { setIsMobile(window.innerWidth <= 768) }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => { loadUsers() }, [])
-
   async function loadUsers() {
     setLoading(true)
     setError('')
@@ -36,6 +28,15 @@ export default function AdminUsers() {
     setLoading(false)
   }
 
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { loadUsers() }, [])
+
   async function toggleRole(id, currentRole) {
     const newRole = currentRole === 'admin' ? 'user' : 'admin'
     if (!confirm(`Change role to "${newRole}"?`)) return
@@ -52,7 +53,7 @@ export default function AdminUsers() {
         return
       }
       setUsers(users.map(u => u.id === id ? { ...u, role: newRole } : u))
-    } catch (err) {
+    } catch {
       alert('❌ Network error while updating role.')
     }
   }

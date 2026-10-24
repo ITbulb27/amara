@@ -9,13 +9,12 @@ export default function CheckoutPage() {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
   const { cart, totalItems, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' })
-
-  useEffect(() => {
-    if (user) {
-      setForm(prev => ({ ...prev, name: profile?.full_name || prev.name, email: user.email || prev.email }))
-    }
-  }, [user, profile])
+  const [form, setForm] = useState({
+    name: profile?.full_name || '',
+    email: user?.email || '',
+    phone: '',
+    address: '',
+  })
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -75,7 +74,7 @@ export default function CheckoutPage() {
 
       clearCart()
       setSuccess(true)
-    } catch (err) {
+    } catch {
       setOrderError('Network error. Is the PHP server running?')
     }
 

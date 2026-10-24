@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const API_URL = 'http://localhost/amara-api'
@@ -8,14 +9,10 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    checkSession()
-  }, [])
-
   async function checkSession() {
     try {
       const res = await fetch(`${API_URL}/check-session.php`, {
-        credentials: 'include', // important: sends the session cookie
+        credentials: 'include',
       })
       const data = await res.json()
       if (data.user) {
@@ -46,7 +43,7 @@ export function AuthProvider({ children }) {
       setUser({ id: data.user.id, email: data.user.email })
       setProfile({ full_name: data.user.full_name, role: data.user.role })
       return { data }
-    } catch (err) {
+    } catch {
       return { error: { message: 'Network error. Is the PHP server running?' } }
     }
   }
@@ -65,7 +62,7 @@ export function AuthProvider({ children }) {
       setUser({ id: data.user.id, email: data.user.email })
       setProfile({ full_name: data.user.full_name, role: data.user.role })
       return { data }
-    } catch (err) {
+    } catch {
       return { error: { message: 'Network error. Is the PHP server running?' } }
     }
   }
@@ -88,6 +85,11 @@ export function AuthProvider({ children }) {
     setUser(null)
     setProfile(null)
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    checkSession()
+  }, [])
 
   const isAdmin = profile?.role === 'admin'
 

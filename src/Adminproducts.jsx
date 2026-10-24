@@ -58,7 +58,7 @@ function ProductForm({ row, onChange }) {
       }
 
       onChange({ ...row, image: data.url })
-    } catch (err) {
+    } catch {
       setUploadError('❌ Network error during upload.')
     }
     setUploading(false)
@@ -130,14 +130,6 @@ export default function AdminProducts() {
   const [saving, setSaving] = useState(false)
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
 
-  useEffect(() => {
-    function handleResize() { setIsMobile(window.innerWidth <= 768) }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => { loadProducts() }, [])
-
   async function loadProducts() {
     setLoading(true)
     try {
@@ -149,6 +141,15 @@ export default function AdminProducts() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { loadProducts() }, [])
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500) }
 
@@ -182,7 +183,7 @@ export default function AdminProducts() {
       setAddOpen(false)
       loadProducts()
       showToast(`✅ ${payload.length} product(s) added.`)
-    } catch (err) {
+    } catch {
       showToast('❌ Failed to save products.')
     }
     setSaving(false)
@@ -206,7 +207,7 @@ export default function AdminProducts() {
       setEditProduct(null)
       loadProducts()
       showToast('✅ Product updated.')
-    } catch (err) {
+    } catch {
       showToast('❌ Network error.')
     }
   }
@@ -220,7 +221,7 @@ export default function AdminProducts() {
       })
       loadProducts()
       showToast('🗑️ Product deleted.')
-    } catch (err) {
+    } catch {
       showToast('❌ Failed to delete.')
     }
   }

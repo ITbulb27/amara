@@ -10,14 +10,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState('')
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
 
-  useEffect(() => {
-    function handleResize() { setIsMobile(window.innerWidth <= 768) }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => { load() }, [])
-
   async function load() {
     setLoading(true)
     setError('')
@@ -55,6 +47,15 @@ export default function AdminDashboard() {
     )
     setLoading(false)
   }
+
+  useEffect(() => {
+    function handleResize() { setIsMobile(window.innerWidth <= 768) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { load() }, [])
 
   const cards = [
     { label: 'Total Products', value: stats.products, icon: '🛍️', bg: '#fce7f3', color: '#be185d' },
