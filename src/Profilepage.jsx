@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthContext'
 import { useCart } from './CartContext'
-
-const API_URL = 'http://localhost/amara-api'
+import { API_URL } from './api'
 
 export default function ProfilePage() {
   const { user, profile, signOut } = useAuth()

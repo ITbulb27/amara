@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { formatPrice } from './utils'
+import { API_URL } from './api'
 
-const API_URL = 'http://localhost/amara-api'
 const CATEGORIES = ['mens', 'women', 'kids', 'streetwear']
 const STATUS_OPTS = ['Active', 'Draft', 'Out of stock']
 const emptyRow = () => ({ name: '', price: '', old_price: '', image: '', category: 'mens', tag: '', stock: 0, status: 'Active' })

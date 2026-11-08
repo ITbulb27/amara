@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { formatPrice } from './utils'
+import { API_URL } from './api'
 
-const API_URL = 'http://localhost/amara-api'
 const STATUS_OPTS = ['pending', 'processing', 'shipped', 'completed', 'cancelled']
 const statusColor = { pending: ['#fef3c7', '#92400e'], processing: ['#dbeafe', '#1e40af'], shipped: ['#ede9fe', '#5b21b6'], completed: ['#d1fae5', '#065f46'], cancelled: ['#fee2e2', '#991b1b'] }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from './AuthContext'
+import amaraLogo from './assets/amara.jpg'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -36,10 +37,12 @@ export default function RegisterPage() {
   const labelStyle = { display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.35rem' }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #fce7f3 0%, #faf5ff 100%)', padding: '2rem', fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
-      <div style={{ background: '#fff', borderRadius: '16px', padding: '2.5rem', width: '100%', maxWidth: '440px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #fce7f3 0%, #faf5ff 100%)', padding: '2rem', fontFamily: "'Segoe UI', system-ui, sans-serif", position: 'relative', overflow: 'hidden' }}>
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: `url(${amaraLogo})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(18px) brightness(0.92)', transform: 'scale(1.1)', zIndex: 0 }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.62)', zIndex: 1 }} />
+      <div style={{ background: '#fff', borderRadius: '16px', padding: '2.5rem', width: '100%', maxWidth: '440px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', position: 'relative', zIndex: 2 }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 0.25rem' }}>Create account</h1>
-        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: '0 0 2rem' }}>Mag-join sa Amara's Collection.</p>
+        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: '0 0 2rem' }}>Join Amara's Collection.</p>
 
         <div style={{ marginBottom: '1.1rem' }}>
           <label style={labelStyle}>Full name</label>

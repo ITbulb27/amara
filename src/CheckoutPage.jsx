@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { API_URL } from './api'
 import { useCart } from './CartContext'
 import { useAuth } from './AuthContext'
-
-const API_URL = 'http://localhost/amara-api'
 
 export default function CheckoutPage() {
   const navigate = useNavigate()

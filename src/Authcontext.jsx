@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
-
-const API_URL = 'http://localhost/amara-api'
+import { API_URL } from './api'
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {

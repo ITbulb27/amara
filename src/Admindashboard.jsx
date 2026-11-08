@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { formatPrice } from './utils'
-
-const API_URL = 'http://localhost/amara-api'
+import { API_URL } from './api'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, revenue: 0, users: 0 })

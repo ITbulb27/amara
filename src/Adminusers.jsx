@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const API_URL = 'http://localhost/amara-api'
+import { API_URL } from './api'
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([])
